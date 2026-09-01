@@ -1,0 +1,267 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Meme Caption Generator</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+      * {
+        box-sizing: border-box;
+        margin: 0;
+        padding: 0;
+      }
+
+      body {
+        font-family: 'Inter', sans-serif;
+        background-color: #f3f4f6;
+        color: #1f2937;
+        min-height: 100vh;
+        display: flex;
+        flex-direction: column;
+      }
+
+      header {
+        background-color: #ffffff;
+        box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+        padding: 1rem 2rem;
+      }
+
+      nav ul {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        list-style: none;
+        gap: 1.5rem;
+      }
+
+      nav a {
+        text-decoration: none;
+        color: #4b5563;
+        font-weight: 500;
+        font-size: 0.95rem;
+        padding: 0.5rem 1rem;
+        border-radius: 6px;
+        transition: all 0.2s ease;
+      }
+
+      nav a:hover {
+        color: #2563eb;
+        background-color: #eff6ff;
+      }
+
+      nav a.active {
+        color: #2563eb;
+        background-color: #eff6ff;
+        font-weight: 600;
+      }
+
+      main {
+        flex: 1;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        padding: 2rem 1rem;
+      }
+
+      .container {
+        background: #ffffff;
+        padding: 2.5rem;
+        border-radius: 16px;
+        box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.05), 0 8px 10px -6px rgba(0, 0, 0, 0.01);
+        width: 100%;
+        max-width: 520px;
+        text-align: center;
+      }
+
+      h2 {
+        font-size: 1.75rem;
+        font-weight: 700;
+        color: #111827;
+        margin-bottom: 1.5rem;
+      }
+
+      .controls {
+        display: flex;
+        flex-direction: column;
+        gap: 1rem;
+        margin-bottom: 1.5rem;
+      }
+
+      input[type="file"], select, button {
+        width: 100%;
+        padding: 0.75rem 1rem;
+        font-size: 0.95rem;
+        font-family: inherit;
+        border-radius: 8px;
+        transition: all 0.2s ease;
+      }
+
+      input[type="file"] {
+        background-color: #f9fafb;
+        border: 1px dashed #d1d5db;
+        color: #4b5563;
+        cursor: pointer;
+      }
+
+      input[type="file"]::file-selector-button {
+        padding: 0.35rem 0.75rem;
+        margin-right: 0.75rem;
+        background-color: #e5e7eb;
+        border: none;
+        border-radius: 4px;
+        color: #374151;
+        font-weight: 500;
+        cursor: pointer;
+      }
+
+      select {
+        background-color: #f9fafb;
+        border: 1px solid #d1d5db;
+        color: #374151;
+        outline: none;
+        cursor: pointer;
+      }
+
+      select:focus {
+        border-color: #2563eb;
+        box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.15);
+      }
+
+      button {
+        background-color: #10b981;
+        color: #ffffff;
+        border: none;
+        font-weight: 600;
+        cursor: pointer;
+      }
+
+      button:hover:not(:disabled) {
+        background-color: #059669;
+      }
+
+      button:disabled {
+        background-color: #9ca3af;
+        cursor: not-allowed;
+        opacity: 0.7;
+      }
+
+      .canvas-container {
+        min-height: 250px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background-color: #f9fafb;
+        border: 2px dashed #e5e7eb;
+        border-radius: 12px;
+        padding: 1rem;
+        overflow: hidden;
+      }
+
+      canvas {
+        max-width: 100%;
+        height: auto;
+        border-radius: 8px;
+        display: block;
+      }
+    </style>
+  </head>
+  <body>
+    <header>
+      <nav>
+        <ul>
+          <li><a href="project.html">Generate Meme</a></li>
+          <li><a href="project_2.html" class="active">Upload Meme Image</a></li>
+        </ul>
+      </nav>
+    </header>
+
+    <main>
+      <div class="container">
+        <h2>Meme Caption Generator</h2>
+      
+        <div class="controls">
+          <input type="file" id="imageInput" accept="image/*">
+          
+          <select id="captionSelect">
+            <option value="">-- Select a Caption --</option>
+            <option value="IT WORKS ON MY MACHINE">IT WORKS ON MY MACHINE</option>
+            <option value="EXPECTATION VS REALITY">EXPECTATION VS REALITY</option>
+            <option value="NOT SURE IF GENIUS OR LUCKY">NOT SURE IF GENIUS OR LUCKY</option>
+            <option value="THIS IS FINE">THIS IS FINE</option>
+            <option value="NO REGRETS">NO REGRETS</option>
+            <option value="POV: YOU THOUGHT ADULTING WOULD BE FUN">POV: YOU THOUGHT ADULTING WOULD BE FUN</option>
+            <option value="100% RELATABLE">100% RELATABLE</option>
+            <option value="THIS IS A MODD">THIS IS A MOOD</option> 
+        </select>
+
+          <button id="downloadBtn" disabled>Download Image</button>
+        </div>
+
+        <div class="canvas-container">
+          <canvas id="memeCanvas"></canvas>
+        </div>
+      </div>
+    </main>
+
+    <script>
+      const imageInput = document.getElementById('imageInput');
+      const captionSelect = document.getElementById('captionSelect');
+      const downloadBtn = document.getElementById('downloadBtn');
+      const canvas = document.getElementById('memeCanvas');
+      const ctx = canvas.getContext('2d');
+
+      let currentImage = null;
+
+      imageInput.addEventListener('change', (e) => {
+        const file = e.target.files[0];
+        if (!file) return;
+
+        const reader = new FileReader();
+        reader.onload = (event) => {
+          const img = new Image();
+          img.onload = () => {
+            currentImage = img;
+            canvas.width = img.width;
+            canvas.height = img.height;
+            drawMeme();
+            downloadBtn.disabled = false;
+          };
+          img.src = event.target.result;
+        };
+        reader.readAsDataURL(file);
+      });
+
+      captionSelect.addEventListener('change', drawMeme);
+
+      function drawMeme() {
+        if (!currentImage) return;
+
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        ctx.drawImage(currentImage, 0, 0, canvas.width, canvas.height);
+
+        const text = captionSelect.value;
+        if (!text) return;
+
+        const fontSize = Math.floor(canvas.width / 14);
+        ctx.fillStyle = 'white';
+        ctx.strokeStyle = 'black';
+        ctx.lineWidth = Math.floor(fontSize / 7);
+        ctx.font = `900 ${fontSize}px Impact, sans-serif`;
+        ctx.textAlign = 'center';
+
+        ctx.textBaseline = 'bottom';
+        const padding = Math.floor(canvas.height * 0.03);
+        ctx.strokeText(text, canvas.width / 2, canvas.height - padding);
+        ctx.fillText(text, canvas.width / 2, canvas.height - padding);
+      }
+
+      downloadBtn.addEventListener('click', () => {
+        const link = document.createElement('a');
+        link.download = 'captioned-image.png';
+        link.href = canvas.toDataURL('image/png');
+        link.click();
+      });
+    </script>
+  </body>
+</html>
