@@ -1,205 +1,278 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-  <title>AI-Powered Meme Generator</title>
-  <style>
-    * {
-      box-sizing: border-box;
-      margin: 0;
-      padding: 0;
-    }
-
-    body {
-      background-color: whitesmoke;
-      display: flex;
-      align-items: center;
-      padding: 20px;
-    }
-
-    .container {
-      background: whitesmoke;
-      padding: 30px;
-      border-radius: 12px;
-      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
-      width: 100%;
-      text-align: center;
-    }
-
-    h1 {
-      color: #333;
-    }
-
-    .controls {
-      display: flex;
-      flex-direction: column;
-      gap: 15px;
-    }
-
-    select, button {
-      padding: 12px;
-      font-size: 16px;
-      border-radius: 6px;
-      border: 1px solid #ccc;
-    }
-
-    select {
-      background-color: white;
-      cursor: pointer;
-    }
-
-    button {
-      background-color: blue;
-      color: white;
-      cursor: pointer;
-      font-weight: bold;
-    }
-
-    button:hover {
-      background-color: blue;
-    }
-
-    .meme-display {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      border: 2px dashed #ddd;
-      border-radius: 8px;
-      padding: 15px;
-    }
-
-    .meme-display img {
-      border-radius: 6px;
-      object-fit: contain;
-    }
-
-    .actions {
-      margin-top: 20px;
-    }
-
-    .download-btn {
-      background-color: #28a745;
-      display: inline-block;
-      width: 100%;
-    }
-
-    .download-btn:hover {
-      background-color: #218838;
-    }
-
-    .hidden {
-      display: none;
-    }
-  </style>
-</head>
-<body>
-
-  <div class="container">
-    <h1>AI-Powered Meme Generator</h1>
-    
-    <div class="controls">
-      <select id="topicSelect">
-        <option value="" disabled selected>Select a Topic</option>
-        <option value="tech">Tech & Coding</option>
-        <option value="gaming">Gaming</option>
-        <option value="office">Work & Office</option>
-        <option value="cats">Cats</option>
-        <option value="school">School & Student Life</option>
-      </select>
-
-      <button id="generateBtn">Get Random Meme</button>
-    </div>
-
-    <div class="meme-display">
-      <p id="placeholderText">Select a topic and click generate!</p>
-      <img id="memeImage" class="hidden" alt="Selected Meme">
-    </div>
-
-    <div class="actions">
-      <button id="downloadBtn" class="download-btn hidden">Download Meme</button>
-    </div>
-  </div>
-
-  <script>
-    const memeData = {
-      tech: [
-        "images/tech/tech1.jpg", "images/tech/tech2.jpg", "images/tech/tech3.jpg",
-        "images/tech/tech4.jpg", "images/tech/tech5.jpg", "images/tech/tech6.jpg",
-        "images/tech/tech7.jpg", "images/tech/tech8.jpg", "images/tech/tech9.jpg",
-        "images/tech/tech10.jpg"
-      ],
-      gaming: [
-        "images/gaming/game1.jpg", "images/gaming/game2.jpg", "images/gaming/game3.jpg",
-        "images/gaming/game4.jpg", "images/gaming/game5.jpg", "images/gaming/game6.jpg",
-        "images/gaming/game7.jpg", "images/gaming/game8.jpg", "images/gaming/game9.jpg",
-        "images/gaming/game10.jpg"
-      ],
-      office: [
-        "images/office/office1.jpg", "images/office/office2.jpg", "images/office/office3.jpg",
-        "images/office/office4.jpg", "images/office/office5.jpg", "images/office/office6.jpg",
-        "images/office/office7.jpg", "images/office/office8.jpg", "images/office/office9.jpg",
-        "images/office/office10.jpg"
-      ],
-      cats: [
-        "images/cats/cat1.jpg", "images/cats/cat2.jpg", "images/cats/cat3.jpg",
-        "images/cats/cat4.jpg", "images/cats/cat5.jpg", "images/cats/cat6.jpg",
-        "images/cats/cat7.jpg", "images/cats/cat8.jpg", "images/cats/cat9.jpg",
-        "images/cats/cat10.jpg"
-      ],
-      school: [
-        "images/school/school1.jpg", "images/school/school2.jpg", "images/school/school3.jpg",
-        "images/school/school4.jpg", "images/school/school5.jpg", "images/school/school6.jpg",
-        "images/school/school7.jpg", "images/school/school8.jpg", "images/school/school9.jpg",
-        "images/school/school10.jpg"
-      ]
-    };
-
-    const topicSelect = document.getElementById('topicSelect');
-    const generateBtn = document.getElementById('generateBtn');
-    const memeImage = document.getElementById('memeImage');
-    const placeholderText = document.getElementById('placeholderText');
-    const downloadBtn = document.getElementById('downloadBtn');
-
-    let currentMemeUrl = '';
-
-    generateBtn.addEventListener('click', () => {
-      const selectedTopic = topicSelect.value;
-
-      if (!selectedTopic) {
-        alert('Please select a topic first!');
-        return;
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Random Meme Generator</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+      * {
+        box-sizing: border-box;
+        margin: 0;
+        padding: 0;
       }
 
-      const categoryMemes = memeData[selectedTopic];
-      const randomIndex = Math.floor(Math.random() * categoryMemes.length);
-      currentMemeUrl = categoryMemes[randomIndex];
+      body {
+        font-family: 'Inter', sans-serif;
+        background-color: #f3f4f6;
+        color: #1f2937;
+        min-height: 100vh;
+        display: flex;
+        flex-direction: column;
+      }
 
-      memeImage.src = currentMemeUrl;
-      memeImage.classList.remove('hidden');
-      placeholderText.classList.add('hidden');
-      downloadBtn.classList.remove('hidden');
-    });
+      header {
+        background-color: #ffffff;
+        box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+        padding: 1rem 2rem;
+      }
 
-    downloadBtn.addEventListener('click', async () => {
-      try {
-        const response = await fetch(currentMemeUrl);
-        const blob = await response.blob();
-        const blobUrl = URL.createObjectURL(blob);
+      nav ul {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        list-style: none;
+        gap: 1.5rem;
+      }
 
-        const a = document.createElement('a');
-        a.href = blobUrl;
-        a.download = `meme-${Date.now()}.jpg`;
-        document.body.appendChild(a);
-        a.click();
-        document.body.removeChild(a);
-        URL.revokeObjectURL(blobUrl);
-      } 
-    catch(error){
-        const a = document.createElement('a');
-        a.href = currentMemeUrl;
-        a.download = 'meme.jpg';
-        a.target = '_blank';
-        a.click();
-    }});
-  </script>
-</body>
+      nav a {
+        text-decoration: none;
+        color: #4b5563;
+        font-weight: 500;
+        font-size: 0.95rem;
+        padding: 0.5rem 1rem;
+        border-radius: 6px;
+        transition: all 0.2s ease;
+      }
+
+      nav a:hover {
+        color: #2563eb;
+        background-color: #eff6ff;
+      }
+
+      nav a.active {
+        color: #2563eb;
+        background-color: #eff6ff;
+        font-weight: 600;
+      }
+
+      main {
+        flex: 1;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        padding: 2rem 1rem;
+      }
+
+      .container {
+        background: #ffffff;
+        padding: 2.5rem;
+        border-radius: 16px;
+        box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.05), 0 8px 10px -6px rgba(0, 0, 0, 0.01);
+        width: 100%;
+        max-width: 520px;
+        text-align: center;
+      }
+
+      h1 {
+        font-size: 1.75rem;
+        font-weight: 700;
+        color: #111827;
+        margin-bottom: 1.5rem;
+      }
+
+      .controls {
+        display: flex;
+        flex-direction: column;
+        gap: 1rem;
+        margin-bottom: 1.5rem;
+      }
+
+      select, button {
+        width: 100%;
+        padding: 0.75rem 1rem;
+        font-size: 0.95rem;
+        font-family: inherit;
+        border-radius: 8px;
+        transition: all 0.2s ease;
+      }
+
+      select {
+        background-color: #f9fafb;
+        border: 1px solid #d1d5db;
+        color: #374151;
+        outline: none;
+        cursor: pointer;
+      }
+
+      select:focus {
+        border-color: #2563eb;
+        box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.15);
+      }
+
+      button {
+        background-color: #2563eb;
+        color: #ffffff;
+        border: none;
+        font-weight: 600;
+        cursor: pointer;
+      }
+
+      button:hover {
+        background-color: #1d4ed8;
+      }
+
+      .meme-display {
+        min-height: 250px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background-color: #f9fafb;
+        border: 2px dashed #e5e7eb;
+        border-radius: 12px;
+        padding: 1rem;
+        overflow: hidden;
+      }
+
+      #placeholderText {
+        color: #6b7280;
+        font-size: 0.95rem;
+      }
+
+      .meme-display img {
+        max-width: 100%;
+        max-height: 400px;
+        border-radius: 8px;
+        object-fit: contain;
+      }
+
+      .actions {
+        margin-top: 1.5rem;
+      }
+
+      .download-btn {
+        background-color: #10b981;
+      }
+
+      .download-btn:hover {
+        background-color: #059669;
+      }
+
+      .hidden {
+        display: none !important;
+      }
+    </style>
+  </head>
+  <body>
+    <header>
+      <nav>
+        <ul>
+          <li><a href="project.html" class="active">Generate Meme</a></li>
+          <li><a href="project_2.html">Upload Meme Image</a></li>
+        </ul>
+      </nav>
+    </header>
+
+    <main>
+      <div class="container">
+        <h1>Random Meme Generator</h1>
+        
+        <div class="controls">
+          <select id="topicSelect">
+            <option value="" disabled selected>Select a Topic</option>
+            <option value="tech">Tech & Coding</option>
+            <option value="gaming">Gaming</option>
+            <option value="office">Work & Office</option>
+            <option value="cats">Cats</option>
+            <option value="school">School & Student Life</option>
+          </select>
+
+          <button id="generateBtn">Get Random Meme</button>
+        </div>
+
+        <div class="meme-display">
+          <p id="placeholderText">Select a topic and click generate!</p>
+          <img id="memeImage" class="hidden" alt="Selected Meme">
+        </div>
+
+        <div class="actions">
+          <button id="downloadBtn" class="download-btn hidden">Download Meme</button>
+        </div>
+      </div>
+    </main>
+
+    <script>
+      const memeData = {
+        tech: [
+          "images/tech/tech1.jpg", "images/tech/tech2.jpg", "images/tech/tech3.jpg",
+          "images/tech/tech4.jpg", "images/tech/tech5.jpg", "images/tech/tech6.jpg",
+          "images/tech/tech7.jpg", "images/tech/tech8.jpg", "images/tech/tech9.jpg",
+          "images/tech/tech10.jpg"
+        ],
+        gaming: [
+          "images/gaming/game1.jpg", "images/gaming/game2.jpg", "images/gaming/game3.jpg",
+          "images/gaming/game4.jpg", "images/gaming/game5.jpg", "images/gaming/game6.jpg",
+          "images/gaming/game7.jpg", "images/gaming/game8.jpg", "images/gaming/game9.jpg",
+          "images/gaming/game10.jpg"
+        ],
+        office: [
+          "images/office/office1.jpg", "images/office/office2.jpg", "images/office/office3.jpg",
+          "images/office/office4.jpg", "images/office/office5.jpg", "images/office/office6.jpg",
+          "images/office/office7.jpg", "images/office/office8.jpg", "images/office/office9.jpg",
+          "images/office/office10.jpg"
+        ],
+        cats: [
+          "images/cats/cat1.jpg", "images/cats/cat2.jpg", "images/cats/cat3.jpg",
+          "images/cats/cat4.jpg", "images/cats/cat5.jpg", "images/cats/cat6.jpg",
+          "images/cats/cat7.jpg", "images/cats/cat8.jpg", "images/cats/cat9.jpg",
+          "images/cats/cat10.jpg"
+        ],
+        school: [
+          "images/school/school1.jpg", "images/school/school2.jpg", "images/school/school3.jpg",
+          "images/school/school4.jpg", "images/school/school5.jpg", "images/school/school6.jpg",
+          "images/school/school7.jpg", "images/school/school8.jpg", "images/school/school9.jpg",
+          "images/school/school10.jpg"
+        ]
+      };
+
+      const topicSelect = document.getElementById('topicSelect');
+      const generateBtn = document.getElementById('generateBtn');
+      const memeImage = document.getElementById('memeImage');
+      const placeholderText = document.getElementById('placeholderText');
+      const downloadBtn = document.getElementById('downloadBtn');
+
+      let currentMemeUrl = '';
+
+      generateBtn.addEventListener('click', () => {
+        const selectedTopic = topicSelect.value;
+
+        if (!selectedTopic) {
+          alert('Please select a topic first!');
+          return;
+        }
+
+        const categoryMemes = memeData[selectedTopic];
+        const randomIndex = Math.floor(Math.random() * categoryMemes.length);
+        currentMemeUrl = categoryMemes[randomIndex];
+
+        memeImage.src = currentMemeUrl;
+        memeImage.classList.remove('hidden');
+        placeholderText.classList.add('hidden');
+        downloadBtn.classList.remove('hidden');
+      });
+
+      downloadBtn.addEventListener('click', async () => {
+      const response = await fetch(currentMemeUrl);
+      const blob = await response.blob();
+      const blobUrl = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = blobUrl;
+      a.download = `meme-${Date.now()}.jpg`;
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      URL.revokeObjectURL(blobUrl);
+      });
+    </script>
+  </body>
 </html>
